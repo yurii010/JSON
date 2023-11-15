@@ -1,0 +1,21 @@
+.user{
+    border:1px solid black;
+    width: 300px;
+    padding: 5px;
+}
+
+.body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap:10px;
+}
+
+.postBodyInput, .postTitleInput{
+    margin: 5px;
+}
+
+.display-none{
+    display:none;
+}
