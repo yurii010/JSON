@@ -77,6 +77,10 @@ function showUserPosts(user, container) {
                     addPostButton.addEventListener('click', () => showFormForAdd(user, container));
                     postBlocks.appendChild(addPostButton);
                 }
+                let allPostBodies = postBlocks.querySelectorAll('.postBody');
+                allPostBodies.forEach(postElement => {
+                    postElement.classList.add('display-none');
+                });
             });
     }
 }
