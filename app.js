@@ -61,7 +61,6 @@ function showUserPosts(user, container) {
                             <h4 class="postTitle">${item.title}</h4>
                             <p class="postBody display-none">${item.body}</p>
                         `;
-                        let postTitle = postDiv.querySelector('.postTitle');
                         let postBody = postDiv.querySelector('.postBody');
                         postDiv.addEventListener('click', function () {
                             postBody.classList.toggle('display-none');
