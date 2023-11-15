@@ -1,21 +1,105 @@
-.user{
-    border:1px solid black;
-    width: 300px;
-    padding: 5px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap');
+
+*,
+*::after,
+*::before {
+    padding: 0px;
+    margin: 0px;
 }
 
-.body{
+body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    row-gap:10px;
+    row-gap: 10px;
+    margin: 25px;
+    background-color: #171718;
 }
 
-.postBodyInput, .postTitleInput{
-    margin: 5px;
+.user {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    row-gap: 5px;
+    width: 300px;
+    margin: 10px;
+
+    border-radius: 15px;
+    font-family: 'Roboto Mono', monospace;
+    background-color: #5c62ec;
+    color: white;
 }
 
-.display-none{
-    display:none;
+.user>p{
+    padding: 5px;
+}
+
+.divButton{
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+}
+
+.aboutUser{
+    padding: 15px;
+    border-radius: 15px;
+    background-color: #252526;
+    width: 320px;
+}
+
+.userPosts{
+    padding: 15px;
+    border-radius: 15px;
+    background-color: #252526;
+    width: 320px;
+}
+
+.userPostsBlock{
+    padding: 10px;
+    margin: 7px;
+    border-radius: 10px;
+    color: white;
+    background-color: #5c62ec;
+}
+
+.postTitle{
+    font-weight: 500;
+}
+
+.postBody{
+    margin-top: 10px;
+    font-weight: 300;
+}
+
+.addFormButton, .addPostButton, .divButton>button{
+    margin: 10px;
+    padding: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: none;
+
+    background-color: white;
+    color: #171718;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.addFormButton:active, .addPostButton:active, .divButton>button:active{
+    position: relative;
+    bottom:3px;
+}
+
+.postBodyInput,
+.postTitleInput {
+    height: 30px;
+    border-radius: 10px;
+    width: 200px;
+    margin: 5px 0px;
+}
+
+.display-none {
+    display: none;
 }

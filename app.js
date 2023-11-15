@@ -7,8 +7,10 @@ fetch('https://jsonplaceholder.typicode.com/users')
             userDiv.innerHTML = `
             <p>UserID: ${item.id}</p>
             <p>Username: ${item.name} ${item.username}</p>
+            <div class='divButton'>
             <button class="showInfoUser">About user</button>
             <button class="showAllPosts">User posts</button>
+            </div>
             <div class="aboutUser display-none"></div>
             <div class="userPosts display-none"></div>
             <div class="formForAdd display-none"></div>
@@ -46,14 +48,14 @@ function showUserPosts(user, container) {
     let formContainer = container.querySelector('.formForAdd');
     formContainer.classList.add('display-none');
     if (!postBlocks.classList.contains('display-none')) {
-        fetch('https://jsonplaceholder.typicode.com/posts')
+        fetch(`https://jsonplaceholder.typicode.com/posts?userId=${user.id}`)
             .then(response => response.json())
             .then(posts => {
-                let userPosts = posts.filter(post => post.userId === user.id);
-                userPosts.forEach(item => {
+                posts.forEach(item => {
                     let activePost = postBlocks.querySelector(`[data-post-id="${item.id}"]`);
                     if (!activePost) {
                         let postDiv = document.createElement('div');
+                        postDiv.classList.add('userPostsBlock');
                         postDiv.dataset.postId = item.id;
                         postDiv.innerHTML = `
                             <h4 class="postTitle">${item.title}</h4>
@@ -61,7 +63,7 @@ function showUserPosts(user, container) {
                         `;
                         let postTitle = postDiv.querySelector('.postTitle');
                         let postBody = postDiv.querySelector('.postBody');
-                        postTitle.addEventListener('click', function () {
+                        postDiv.addEventListener('click', function () {
                             postBody.classList.toggle('display-none');
                         });
                         postBlocks.prepend(postDiv);
@@ -80,7 +82,6 @@ function showUserPosts(user, container) {
     }
 }
 
-
 function showFormForAdd(user, container) {
     let formContainer = container.querySelector('.formForAdd');
     const postTitleId = `postTitle_${user.id}`;
@@ -94,39 +95,45 @@ function showFormForAdd(user, container) {
     `;
     formContainer.classList.toggle('display-none');
 
+
     formContainer.querySelector(".addPostButton").addEventListener('click', function () {
         const postTitle = document.getElementById(postTitleId).value;
         const postBody = document.getElementById(postBodyId).value;
-        fetch('https://jsonplaceholder.typicode.com/posts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: user.id,
-                title: postTitle,
-                body: postBody
-            }),
-        })
-            .then(response => response.json())
-            .then(newPost => {
-                console.log('New post added:', newPost);
-                document.getElementById(postTitleId).value = '';
-                document.getElementById(postBodyId).value = '';
+        if (postTitle === "" && postBody === "" || postTitle === "" || postBody === "") {
+            alert("Fill input values!");
+        } else if (postTitle !== "" || postBody !== "") {
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user.id,
+                    title: postTitle,
+                    body: postBody
+                }),
+            })
+                .then(response => response.json())
+                .then(newPost => {
+                    console.log('New post added:', newPost);
+                    document.getElementById(postTitleId).value = '';
+                    document.getElementById(postBodyId).value = '';
 
-                let postBlocks = container.querySelector('.userPosts');
-                let postDiv = document.createElement('div');
-                postDiv.dataset.postId = newPost.id;
-                postDiv.innerHTML = `
-                <h4 class="postTitle">${newPost.title}</h4>
-                <p class="postBody display-none">${newPost.body}</p>
-            `;
-                let postTitle = postDiv.querySelector('.postTitle');
-                let postBody = postDiv.querySelector('.postBody');
-                postTitle.addEventListener('click', function () {
-                    postBody.classList.toggle('display-none');
+                    let postBlocks = container.querySelector('.userPosts');
+                    let postDiv = document.createElement('div');
+                    postDiv.classList.add('userPostsBlock');
+                    postDiv.dataset.postId = newPost.id;
+                    postDiv.innerHTML = `
+                    <h4 class="postTitle">${newPost.title}</h4>
+                    <p class="postBody display-none">${newPost.body}</p>
+                `;
+                    let postTitle = postDiv.querySelector('.postTitle');
+                    let postBody = postDiv.querySelector('.postBody');
+                    postTitle.addEventListener('click', function () {
+                        postBody.classList.toggle('display-none');
+                    });
+                    postBlocks.prepend(postDiv);
                 });
-                postBlocks.prepend(postDiv);
-            });
+        }
     });
 };
