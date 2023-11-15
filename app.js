@@ -9,7 +9,6 @@ fetch('https://jsonplaceholder.typicode.com/users')
             <p>Username: ${item.name} ${item.username}</p>
             <button class="showInfoUser">About user</button>
             <button class="showAllPosts">User posts</button>
-            <button class="addFormButton">New post</button>
             <div class="aboutUser display-none"></div>
             <div class="userPosts display-none"></div>
             <div class="formForAdd display-none"></div>
@@ -19,8 +18,6 @@ fetch('https://jsonplaceholder.typicode.com/users')
             showAboutUserButton.addEventListener('click', () => showInfoUser(item, userDiv));
             let showPostsButton = userDiv.querySelector('.showAllPosts');
             showPostsButton.addEventListener('click', () => showUserPosts(item, userDiv));
-            let addFormButton = userDiv.querySelector('.addFormButton');
-            addFormButton.addEventListener('click', () => showFormForAdd(item, userDiv));
         })
     });
 
@@ -46,15 +43,16 @@ function showInfoUser(item, container) {
 function showUserPosts(user, container) {
     let postBlocks = container.querySelector('.userPosts');
     postBlocks.classList.toggle('display-none');
-
+    let formContainer = container.querySelector('.formForAdd');
+    formContainer.classList.add('display-none');
     if (!postBlocks.classList.contains('display-none')) {
         fetch('https://jsonplaceholder.typicode.com/posts')
             .then(response => response.json())
             .then(posts => {
                 let userPosts = posts.filter(post => post.userId === user.id);
                 userPosts.forEach(item => {
-                    let existingPost = postBlocks.querySelector(`[data-post-id="${item.id}"]`);
-                    if (!existingPost) {
+                    let activePost = postBlocks.querySelector(`[data-post-id="${item.id}"]`);
+                    if (!activePost) {
                         let postDiv = document.createElement('div');
                         postDiv.dataset.postId = item.id;
                         postDiv.innerHTML = `
@@ -66,12 +64,22 @@ function showUserPosts(user, container) {
                         postTitle.addEventListener('click', function () {
                             postBody.classList.toggle('display-none');
                         });
-                        postBlocks.appendChild(postDiv);
+                        postBlocks.prepend(postDiv);
                     }
                 });
+
+                let addPostButton = postBlocks.querySelector('.addFormButton');
+                if (!addPostButton) {
+                    addPostButton = document.createElement('button');
+                    addPostButton.textContent = 'New post';
+                    addPostButton.classList.add('addFormButton');
+                    addPostButton.addEventListener('click', () => showFormForAdd(user, container));
+                    postBlocks.appendChild(addPostButton);
+                }
             });
     }
 }
+
 
 function showFormForAdd(user, container) {
     let formContainer = container.querySelector('.formForAdd');
@@ -100,26 +108,25 @@ function showFormForAdd(user, container) {
                 body: postBody
             }),
         })
-        .then(response => response.json())
-        .then(newPost => {
-            console.log('New post added:', newPost);
-            document.getElementById(postTitleId).value = '';
-            document.getElementById(postBodyId).value = '';
+            .then(response => response.json())
+            .then(newPost => {
+                console.log('New post added:', newPost);
+                document.getElementById(postTitleId).value = '';
+                document.getElementById(postBodyId).value = '';
 
-            let postBlocks = container.querySelector('.userPosts');
-            let postDiv = document.createElement('div');
-            postDiv.dataset.postId = newPost.id;
-            postDiv.innerHTML = `
+                let postBlocks = container.querySelector('.userPosts');
+                let postDiv = document.createElement('div');
+                postDiv.dataset.postId = newPost.id;
+                postDiv.innerHTML = `
                 <h4 class="postTitle">${newPost.title}</h4>
                 <p class="postBody display-none">${newPost.body}</p>
             `;
-            let postTitle = postDiv.querySelector('.postTitle');
-            let postBody = postDiv.querySelector('.postBody');
-            postTitle.addEventListener('click', function () {
-                postBody.classList.toggle('display-none');
+                let postTitle = postDiv.querySelector('.postTitle');
+                let postBody = postDiv.querySelector('.postBody');
+                postTitle.addEventListener('click', function () {
+                    postBody.classList.toggle('display-none');
+                });
+                postBlocks.prepend(postDiv);
             });
-            postBlocks.appendChild(postDiv);
-        });
     });
 };
-
